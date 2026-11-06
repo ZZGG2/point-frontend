@@ -16,7 +16,7 @@ export function LedgerOverview() {
   const max = Math.max(1, ...rows.map((r) => Math.abs(r.totalAmount)));
 
   return (
-    <Card title="포인트 원장 현황" subtitle="point.point_ledger / point_wallet 집계 · 3초마다 갱신">
+    <Card title="포인트 원장">
       {isLoading && <p className={styles.hint}>집계 중…</p>}
       {isError && (
         <Notice tone="critical">

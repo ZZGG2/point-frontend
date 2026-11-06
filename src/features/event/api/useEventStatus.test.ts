@@ -1,6 +1,13 @@
 import { claimedRatio, toEventStatusState } from './useEventStatus';
 
-const status = { eventId: 'evt', open: true, remainingStock: 1, participants: 4, winners: 2 };
+const status = {
+  eventId: 'evt',
+  open: true,
+  remainingStock: 1,
+  rewardAmount: 500,
+  participants: 4,
+  winners: 2,
+};
 
 describe('toEventStatusState', () => {
   it('200 → 현황', () => {

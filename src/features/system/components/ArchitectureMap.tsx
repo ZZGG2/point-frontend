@@ -69,7 +69,7 @@ export function ArchitectureMap() {
   const summary = ids.map((n) => `${NODES[n].title} ${STATUS_LABEL[states[n]]}`).join(', ');
 
   return (
-    <Card title="요청 흐름 · 구성도" subtitle="상태 API 결과로 각 구간을 실시간 표시 (5초마다)">
+    <Card title="구성도">
       <div className={styles.mapWrap}>
         <svg
           className={styles.map}

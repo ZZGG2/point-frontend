@@ -32,7 +32,7 @@ export function LoadBalancePanel() {
   return (
     <Card
       title="부하 분산 확인"
-      subtitle="같은 API 를 여러 번 호출해 어떤 Pod 가 응답했는지 집계"
+      subtitle="응답한 Pod 분포"
       action={
         test.data && (
           <Badge tone={dist.length > 1 ? 'good' : 'neutral'}>인스턴스 {dist.length}개</Badge>
@@ -70,10 +70,7 @@ export function LoadBalancePanel() {
       </div>
 
       {!test.data && !test.isPending && (
-        <p className={styles.hint}>
-          K8s 에서는 Pod 가 2개 이상이면 응답 인스턴스가 섞여 나와야 정상입니다. 로컬은 인스턴스
-          1개로 표시됩니다.
-        </p>
+        <p className={styles.hint}>Pod 가 여러 개면 응답이 섞여 나와야 정상 (로컬은 1개)</p>
       )}
 
       {dist.length > 0 && (

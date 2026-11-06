@@ -1,42 +1,46 @@
 .shell {
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
 }
 
-.topbar {
+/* ---- 상단 헤더 ---- */
+.header {
   position: sticky;
   top: 0;
-  z-index: 10;
-  background: color-mix(in srgb, var(--surface) 88%, transparent);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--border);
+  z-index: 20;
+  background: color-mix(in srgb, var(--bg) 85%, transparent);
+  backdrop-filter: saturate(1.6) blur(12px);
 }
 
-.topbarInner {
-  max-width: 1120px;
+.headerInner {
   margin: 0 auto;
-  padding: 10px 20px;
+  padding: 12px 20px;
   display: flex;
   align-items: center;
-  gap: 20px;
-  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.narrow {
+  max-width: 640px;
+}
+
+.wide {
+  max-width: 1120px;
 }
 
 .brand {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-weight: 700;
-  font-size: 16px;
-  text-decoration: none;
+  gap: 8px;
+  font-weight: 800;
+  font-size: 18px;
+  letter-spacing: -0.02em;
 }
 
 .logo {
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   border-radius: 9px;
-  background: linear-gradient(135deg, var(--brand), var(--brand-strong));
+  background: var(--brand);
   color: #fff;
   display: grid;
   place-items: center;
@@ -44,77 +48,166 @@
   font-weight: 800;
 }
 
-.nav {
+.topNav {
   display: flex;
-  gap: 4px;
+  gap: 2px;
   flex: 1;
-  flex-wrap: wrap;
 }
 
-.navLink {
+.topLink {
   padding: 7px 12px;
-  border-radius: var(--radius-sm);
-  text-decoration: none;
-  color: var(--text-2);
-  font-weight: 550;
-  font-size: 14px;
+  border-radius: 10px;
+  color: var(--muted);
+  font-weight: 650;
+  font-size: 15px;
 }
 
-.navLink:hover {
-  background: var(--surface-2);
+.topLink:hover {
   color: var(--text);
 }
 
-.active {
-  background: var(--brand-soft);
-  color: var(--brand-strong);
+.topLinkActive {
+  color: var(--text);
 }
 
-.tools {
+/* ---- 계정 메뉴 ---- */
+.account {
+  position: relative;
+  margin-left: auto;
+}
+
+.accountButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 6px 0 4px;
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+}
+
+.accountButton:hover {
+  background: var(--surface-press);
+}
+
+.avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--brand-soft);
+  color: var(--brand-strong);
+  display: grid;
+  place-items: center;
+  font-weight: 750;
+  font-size: 13px;
+}
+
+.accountName {
+  font-weight: 650;
+  font-size: 14px;
+}
+
+.menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  width: 220px;
+  background: var(--surface);
+  border-radius: 16px;
+  box-shadow:
+    0 0 0 1px var(--border),
+    0 12px 32px rgba(0, 0, 0, 0.12);
+  padding: 8px;
+}
+
+.menuLabel {
+  font-size: 12px;
+  color: var(--muted);
+  padding: 6px 10px 4px;
+}
+
+.menuItem {
+  width: 100%;
   display: flex;
   align-items: center;
   gap: 10px;
-  flex-wrap: wrap;
+  padding: 9px 10px;
+  border: none;
+  background: none;
+  border-radius: 10px;
+  font-size: 14px;
+  text-align: left;
 }
 
-/* shared/dev/DevUserSwitcher 의 label/select 를 감싸서 꾸민다 */
-.userSwitcher label {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  color: var(--text-2);
+.menuItem:hover {
+  background: var(--surface-2);
 }
 
-.userSwitcher select {
-  height: 32px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-  background: var(--surface);
-  padding: 0 8px;
-  font-weight: 600;
-}
-
-.main {
-  flex: 1;
-  width: 100%;
-  max-width: 1120px;
-  margin: 0 auto;
-  padding: 28px 20px 48px;
-}
-
-.footer {
-  border-top: 1px solid var(--border);
-  color: var(--muted);
+.menuItem .avatar {
+  width: 26px;
+  height: 26px;
   font-size: 12px;
 }
 
-.footerInner {
-  max-width: 1120px;
+.menuCheck {
+  margin-left: auto;
+  color: var(--brand);
+}
+
+.menuDivider {
+  height: 1px;
+  background: var(--grid);
+  margin: 6px 4px;
+}
+
+/* ---- 본문 ---- */
+.main {
   margin: 0 auto;
-  padding: 14px 20px;
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
+  padding: 8px 20px 48px;
+}
+
+/* ---- 모바일 하단 탭 ---- */
+.tabBar {
+  display: none;
+}
+
+@media (max-width: 720px) {
+  .topNav,
+  .accountName {
+    display: none;
+  }
+
+  .main {
+    padding-bottom: calc(var(--tabbar-h) + 32px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .tabBar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 20;
+    height: calc(var(--tabbar-h) + env(safe-area-inset-bottom, 0px));
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+  }
+
+  .tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+  }
+
+  .tabActive {
+    color: var(--text);
+  }
 }

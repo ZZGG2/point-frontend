@@ -1,129 +1,221 @@
-.stack {
+/* ---- 공통 행 카드 (출석, 퀴즈 배너) ---- */
+.row {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
+  align-items: center;
+  gap: 14px;
 }
 
-.question {
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 14px 16px;
+.bubble {
+  flex: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+}
+
+.bubbleAccent {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.bubbleBrand {
+  background: var(--brand-soft);
+  color: var(--brand);
+}
+
+.rowBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.rowTitle {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.rowSub {
+  font-size: 14px;
+  color: var(--muted);
+  margin-top: 1px;
+}
+
+.rowSubDone {
+  color: var(--brand);
   font-weight: 600;
 }
 
-.questionHint {
+.rowSubError {
+  color: var(--critical-text);
+}
+
+.promo {
   display: block;
-  font-weight: 400;
-  font-size: 13px;
-  color: var(--text-2);
-  margin-top: 4px;
-}
-
-.row {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.input {
-  flex: 1;
-  min-width: 160px;
-  height: 38px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
+  border-radius: var(--radius);
   background: var(--surface);
-  padding: 0 12px;
-  font-size: 14px;
-  color: var(--text);
+  padding: 20px 22px;
+  transition: background 0.15s;
 }
 
-.attendance {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  flex-wrap: wrap;
+.promo:hover {
+  background: var(--surface-2);
 }
 
-.calendar {
-  width: 52px;
-  height: 56px;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-  overflow: hidden;
-  text-align: center;
-  flex: none;
-}
-
-.calendarMonth {
-  background: var(--accent);
-  color: #fff;
-  font-size: 11px;
-  font-weight: 700;
-  padding: 2px 0;
-}
-
-.calendarDay {
-  font-size: 22px;
-  font-weight: 700;
-  line-height: 34px;
-}
-
-.attendanceText {
-  flex: 1;
-  min-width: 140px;
-  font-size: 13px;
-  color: var(--text-2);
-}
-
-.banner {
-  display: flex;
-  gap: 10px;
-  padding: 14px 16px;
-  border-radius: var(--radius-sm);
-  background: var(--warning-soft);
-  color: var(--warning-text);
-  font-size: 14px;
-}
-
-.statGrid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  margin-bottom: 18px;
+.chevron {
+  color: var(--muted);
 }
 
 .meter {
-  height: 12px;
+  height: 8px;
   border-radius: 999px;
   background: var(--neutral-soft);
   overflow: hidden;
-  display: flex;
-  gap: 2px;
+  margin-top: 16px;
 }
 
 .meterFill {
+  height: 100%;
   background: var(--brand);
   border-radius: 999px;
   transition: width 0.4s ease;
 }
 
-.meterLabels {
+.meterLabel {
   display: flex;
   justify-content: space-between;
-  font-size: 12px;
-  color: var(--text-2);
+  font-size: 13px;
+  color: var(--muted);
   margin-top: 6px;
 }
 
-.adminRow {
+.meterLabel strong {
+  color: var(--text);
+}
+
+/* ---- 퀴즈 상세 ---- */
+.quizHero {
+  text-align: center;
+  padding: 12px 0 4px;
+}
+
+.quizTag {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+  background: var(--accent-soft);
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+.quizReward {
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin-top: 10px;
+}
+
+.quizRewardSub {
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.question {
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  margin: 24px 0 14px;
+}
+
+.answerInput {
+  width: 100%;
+  height: 54px;
+  border-radius: 14px;
+  border: 1.5px solid var(--grid);
+  background: var(--surface);
+  padding: 0 16px;
+  font-size: 16px;
+  margin-bottom: 12px;
+  outline: none;
+}
+
+.answerInput:focus {
+  border-color: var(--brand);
+}
+
+.formError {
+  font-size: 14px;
+  color: var(--critical-text);
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+/* ---- 결과 ---- */
+.result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 28px 8px 4px;
+}
+
+.resultIcon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  margin-bottom: 18px;
+}
+
+.resultWin {
+  background: var(--brand);
+  color: #fff;
+}
+
+.resultMiss {
+  background: var(--neutral-soft);
+  color: var(--text-2);
+}
+
+.resultTitle {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.resultSub {
+  color: var(--text-2);
+  margin: 6px 0 28px;
+}
+
+/* ---- 점검 배너 ---- */
+.banner {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 16px 18px;
+  border-radius: var(--radius-sm);
+  background: var(--warning-soft);
+  color: var(--warning-text);
+  font-size: 14px;
+  font-weight: 550;
+}
+
+/* ---- 관리자: 이벤트 관리 ---- */
+.adminGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.adminForm {
   display: flex;
   gap: 8px;
   align-items: flex-end;
   flex-wrap: wrap;
-  margin-top: 18px;
-  padding-top: 16px;
-  border-top: 1px solid var(--grid);
 }
 
 .field {
@@ -131,26 +223,26 @@
   flex-direction: column;
   gap: 4px;
   font-size: 12px;
-  color: var(--text-2);
-  width: 100px;
+  color: var(--muted);
+  width: 110px;
 }
 
 .field input {
-  height: 38px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid var(--grid);
   background: var(--surface);
   padding: 0 10px;
-  color: var(--text);
+  font-size: 14px;
 }
 
 .muted {
   color: var(--muted);
-  font-size: 13px;
+  font-size: 14px;
 }
 
-@media (max-width: 480px) {
-  .statGrid {
+@media (max-width: 520px) {
+  .adminGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

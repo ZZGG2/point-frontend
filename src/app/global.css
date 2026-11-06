@@ -1,63 +1,69 @@
 /* 전역 토큰 + 기본 요소 스타일. 컴포넌트 스타일은 각자의 *.module.css 에 둔다. */
 :root {
   color-scheme: light;
-  --bg: #f4f5f7;
+  --bg: #f2f4f6;
   --surface: #ffffff;
-  --surface-2: #f9f9f7;
-  --border: rgba(11, 11, 11, 0.1);
-  --grid: #e1e0d9;
-  --text: #0b0b0b;
-  --text-2: #52514e;
-  --muted: #898781;
+  --surface-2: #f7f8fa;
+  --surface-press: #eef0f3;
+  --border: rgba(11, 11, 11, 0.08);
+  --grid: #e8e9ec;
+  --text: #191f28;
+  --text-2: #4e5968;
+  --muted: #8b95a1;
 
   --brand: #2a78d6;
   --brand-strong: #1c5cab;
   --brand-soft: #e8f1fc;
   --accent: #eb6834;
+  --accent-soft: #fdeee7;
 
   --good: #0ca30c;
-  --good-text: #006300;
-  --good-soft: #e6f6e6;
+  --good-text: #00813a;
+  --good-soft: #e6f6ec;
   --warning: #fab219;
   --warning-text: #8a5a00;
   --warning-soft: #fff5dc;
   --critical: #d03b3b;
-  --critical-text: #b02a2a;
-  --critical-soft: #fde9e9;
-  --neutral-soft: #efeeea;
+  --critical-text: #c62f2f;
+  --critical-soft: #fdecec;
+  --neutral-soft: #eef0f3;
 
-  --radius: 14px;
-  --radius-sm: 8px;
-  --shadow: 0 1px 2px rgba(11, 11, 11, 0.04), 0 4px 16px rgba(11, 11, 11, 0.05);
-  --font: system-ui, -apple-system, 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+  --radius: 20px;
+  --radius-sm: 12px;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  --font: 'Pretendard', system-ui, -apple-system, 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic',
+    sans-serif;
   --mono: ui-monospace, 'Cascadia Code', Consolas, monospace;
+  --tabbar-h: 64px;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
-    --bg: #0d0d0d;
-    --surface: #1a1a19;
-    --surface-2: #222220;
-    --border: rgba(255, 255, 255, 0.1);
-    --grid: #2c2c2a;
-    --text: #f0efec;
-    --text-2: #c3c2b7;
-    --muted: #898781;
+    --bg: #0d0d0e;
+    --surface: #1b1c1e;
+    --surface-2: #232427;
+    --surface-press: #2b2c30;
+    --border: rgba(255, 255, 255, 0.08);
+    --grid: #2c2d30;
+    --text: #f2f3f5;
+    --text-2: #c2c6cc;
+    --muted: #8b95a1;
 
     --brand: #3987e5;
     --brand-strong: #86b6ef;
     --brand-soft: #14263d;
     --accent: #d95926;
+    --accent-soft: #33190f;
 
-    --good-text: #0ca30c;
-    --good-soft: #10260f;
+    --good-text: #2ec26a;
+    --good-soft: #10261a;
     --warning-text: #fab219;
     --warning-soft: #2e2510;
-    --critical-text: #e66767;
+    --critical-text: #f07070;
     --critical-soft: #331616;
-    --neutral-soft: #2a2a28;
-    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --neutral-soft: #2a2b2e;
+    --shadow: none;
   }
 }
 
@@ -76,6 +82,7 @@ body {
   font-size: 15px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
 }
 
 h1,
@@ -87,6 +94,7 @@ p {
 
 a {
   color: inherit;
+  text-decoration: none;
 }
 
 button,

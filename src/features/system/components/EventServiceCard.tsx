@@ -28,24 +28,15 @@ export function EventServiceCard() {
   const pingMs = detailNumber(redis?.details, 'pingMs');
 
   return (
-    <Card
-      title="event-service"
-      subtitle="출석 · 선착순 퀴즈  /  :8081  (/api/events/**)"
-      action={head}
-    >
+    <Card title="event-service" subtitle="출석 · 퀴즈 · :8081" action={head}>
       {isLoading && <p className={styles.hint}>상태 조회 중…</p>}
       {isError && (
         <div className={styles.down} role="alert">
-          event-service 에 연결할 수 없습니다. 이벤트 참여만 영향을 받고 포인트 기능은 monolith 에서
-          계속 동작해야 합니다.
+          연결할 수 없음 — 이벤트만 영향 (포인트 기능은 정상)
         </div>
       )}
       {data?.kind === 'MAINTENANCE' && (
-        <div className={styles.component}>
-          Ingress 가 <code>/api/events/**</code> 를 점검 응답(503 EVENT_MAINTENANCE)으로 돌리고
-          있습니다. DR 환경에서는 event-service 를 복구하지 않는 것이 정상입니다 (ADR-0004 선택적
-          복구).
-        </div>
+        <div className={styles.component}>점검 모드 (DR) — event-service 는 복구 대상이 아님</div>
       )}
       {info && redis && kafka && (
         <>
@@ -94,7 +85,6 @@ export function EventServiceCard() {
                   ),
                 },
               ]}
-              hint="당첨·출석 시 누적 발행 offset 이 늘어나면 Kafka 발행이 실제로 된 것"
             />
           </div>
           <LatencySparkline samples={samples} />

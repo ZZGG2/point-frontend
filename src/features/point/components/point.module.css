@@ -1,159 +1,321 @@
-.pill {
-  display: inline-flex;
+/* ---- 잔액 카드 ---- */
+.balanceCard {
+  background: linear-gradient(140deg, #2a78d6 0%, #1c5cab 100%);
+  color: #fff;
+  border-radius: var(--radius);
+  padding: 24px 22px 18px;
+}
+
+.balanceLabel {
+  font-size: 15px;
+  opacity: 0.85;
+  font-weight: 550;
+}
+
+.balanceValue {
+  display: block;
+  font-size: 36px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  margin: 6px 0 20px;
+  min-height: 43px;
+}
+
+.balanceActions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.balanceAction {
+  display: flex;
   align-items: center;
-  gap: 6px;
-  height: 32px;
-  padding: 0 12px;
-  border-radius: 999px;
+  justify-content: center;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  font-weight: 650;
+  font-size: 15px;
+}
+
+.balanceAction:hover {
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.balanceError {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* ---- 내역 리스트 ---- */
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 0;
+}
+
+.itemIcon {
+  flex: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--surface-2);
+  color: var(--text-2);
+}
+
+.itemIconEarn {
   background: var(--brand-soft);
-  color: var(--brand-strong);
-  font-weight: 700;
-  font-size: 14px;
+  color: var(--brand);
+}
+
+.itemBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.itemTitle {
+  font-size: 15px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.pillError {
-  background: var(--critical-soft);
-  color: var(--critical-text);
+.itemMeta {
+  font-size: 13px;
+  color: var(--muted);
 }
 
-.hero {
-  background: linear-gradient(135deg, #2a78d6, #184f95);
-  color: #fff;
-  border-radius: var(--radius);
-  padding: 24px;
-  box-shadow: var(--shadow);
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  min-height: 168px;
-  justify-content: space-between;
-}
-
-.heroLabel {
-  font-size: 14px;
-  opacity: 0.85;
-}
-
-.heroValue {
-  font-size: 40px;
-  font-weight: 750;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
-}
-
-.heroUnit {
-  font-size: 22px;
-  font-weight: 600;
-  margin-left: 4px;
-}
-
-.heroMeta {
-  font-size: 12px;
-  opacity: 0.8;
-}
-
-.tableWrap {
-  overflow-x: auto;
-}
-
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 14px;
+.itemAmount {
+  text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-.table th {
-  text-align: left;
+.amountEarn {
+  font-weight: 700;
+  color: var(--brand);
+}
+
+.amountUse {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.itemBalance {
   font-size: 12px;
-  font-weight: 600;
   color: var(--muted);
-  padding: 8px 10px;
-  border-bottom: 1px solid var(--grid);
-  white-space: nowrap;
 }
 
-.table td {
-  padding: 11px 10px;
-  border-bottom: 1px solid var(--grid);
-  white-space: nowrap;
-}
-
-.table tr:last-child td {
-  border-bottom: none;
-}
-
-.num {
-  text-align: right !important;
-}
-
-.plus {
-  color: var(--good-text);
+.dayLabel {
+  font-size: 13px;
   font-weight: 650;
-}
-
-.minus {
-  color: var(--critical-text);
-  font-weight: 650;
-}
-
-.ref {
   color: var(--muted);
-  font-size: 12px;
-  margin-left: 6px;
+  padding: 18px 0 2px;
+}
+
+.dayLabel:first-child {
+  padding-top: 0;
 }
 
 .empty {
   color: var(--muted);
   text-align: center;
-  padding: 28px 0;
+  padding: 40px 0;
+  font-size: 15px;
 }
 
-.form {
+.moreLink {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.filters {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+
+.filter {
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: none;
+  background: var(--surface);
+  color: var(--text-2);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.filter[aria-pressed='true'] {
+  background: var(--text);
+  color: var(--surface);
+}
+
+/* ---- 결제 ---- */
+.payStack {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.row {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
+.sectionTitle {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 12px;
 }
 
-.field {
+.merchants {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.merchant {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  flex: 1;
-  min-width: 120px;
-  font-size: 12px;
-  color: var(--text-2);
-}
-
-.input {
-  height: 38px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-  background: var(--surface);
-  padding: 0 10px;
-  font-size: 14px;
-  color: var(--text);
-}
-
-.key {
-  font-family: var(--mono);
-  font-size: 12px;
-  color: var(--text-2);
+  align-items: center;
+  gap: 8px;
+  padding: 16px 8px;
+  border-radius: 14px;
+  border: 1.5px solid transparent;
   background: var(--surface-2);
-  border: 1px dashed var(--border);
-  border-radius: var(--radius-sm);
-  padding: 6px 8px;
-  overflow-wrap: anywhere;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-2);
 }
 
-.hint {
-  font-size: 12px;
+.merchant[aria-pressed='true'] {
+  border-color: var(--brand);
+  background: var(--brand-soft);
+  color: var(--brand-strong);
+}
+
+.amountField {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  border-bottom: 2px solid var(--grid);
+  padding-bottom: 6px;
+}
+
+.amountField:focus-within {
+  border-color: var(--brand);
+}
+
+.amountInput {
+  /* 입력 길이에 맞춰 폭이 늘어나 단위(P)가 숫자 바로 뒤에 붙는다 (미지원 브라우저는 고정 폭) */
+  field-sizing: content;
+  flex: 0 1 auto;
+  min-width: 1ch;
+  max-width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.amountInput::placeholder {
   color: var(--muted);
+  font-weight: 700;
+}
+
+.amountUnit {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-2);
+}
+
+.amountHint {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 8px;
+}
+
+.amountHintError {
+  color: var(--critical-text);
+}
+
+.chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+.chip {
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: none;
+  background: var(--surface-2);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-2);
+}
+
+.chip:hover {
+  background: var(--surface-press);
+}
+
+.payError {
+  font-size: 14px;
+  color: var(--critical-text);
+  text-align: center;
+}
+
+/* ---- 결제 완료 ---- */
+.done {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 40px 8px 8px;
+}
+
+.doneIcon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--brand);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  margin-bottom: 20px;
+}
+
+.doneTitle {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.doneSub {
+  color: var(--text-2);
+  margin-top: 6px;
+}
+
+.doneActions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  width: 100%;
+  margin-top: 32px;
 }

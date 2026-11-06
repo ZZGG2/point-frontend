@@ -32,11 +32,11 @@ export function MonolithCard() {
   const consumerLag = detailNumber(kafka?.details, 'consumerLag');
 
   return (
-    <Card title="monolith" subtitle="user · asset · point · cs  /  :8080" action={head}>
+    <Card title="monolith" subtitle="포인트 · 사용자 · :8080" action={head}>
       {isLoading && <p className={styles.hint}>상태 조회 중…</p>}
       {isError && (
         <div className={styles.down} role="alert">
-          monolith 에 연결할 수 없습니다. 포인트 조회·사용이 모두 중단된 상태입니다.
+          연결할 수 없음 — 포인트 조회·결제 중단
         </div>
       )}
       {info && db && kafka && (
@@ -77,7 +77,6 @@ export function MonolithCard() {
                     ),
                 },
               ]}
-              hint="Heartbeat 경과 = DR 복제 지연(RPO 목표 ≤ 5초). Debezium 이 1초마다 갱신하며, 로컬에는 갱신 주체가 없어 계속 늘어납니다."
             />
             <ComponentPanel
               name="Kafka (원장 반영 컨슈머)"
@@ -103,7 +102,6 @@ export function MonolithCard() {
                     ),
                 },
               ]}
-              hint="lag 0 = event-service 가 발행한 보상이 모두 원장에 반영됨"
             />
           </div>
           <LatencySparkline samples={samples} />

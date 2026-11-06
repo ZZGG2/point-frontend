@@ -633,6 +633,11 @@ export interface components {
                 open: boolean;
                 /** Format: int64 */
                 remainingStock: number;
+                /**
+                 * Format: int64
+                 * @description 당첨 시 지급 포인트
+                 */
+                rewardAmount: number;
                 /** Format: int64 */
                 participants: number;
                 /** Format: int64 */

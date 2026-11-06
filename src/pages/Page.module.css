@@ -1,65 +1,70 @@
-.header {
+.page {
   display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
+  flex-direction: column;
   gap: 12px;
-  flex-wrap: wrap;
-  margin-bottom: 22px;
 }
 
 .title {
   font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  padding: 8px 2px 8px;
+}
+
+.section {
+  font-size: 18px;
   font-weight: 750;
   letter-spacing: -0.01em;
+  padding: 18px 2px 2px;
 }
 
-.lead {
-  color: var(--text-2);
+.spacer {
+  height: 12px;
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 15px;
+  padding: 6px 0;
+  align-self: flex-start;
+}
+
+.back:hover {
+  color: var(--text);
+}
+
+/* ---- 관리자 콘솔 ---- */
+.adminHead {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 8px 2px 4px;
+}
+
+.adminSub {
+  color: var(--muted);
   font-size: 14px;
-  margin-top: 4px;
 }
 
-.stack {
+.adminStack {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 16px;
 }
 
 .grid2 {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
-}
-
-.heroGrid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
-  gap: 18px;
-}
-
-.sideStack {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-.steps {
-  margin: 0;
-  padding-left: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  font-size: 14px;
-  color: var(--text-2);
-}
-
-.steps strong {
-  color: var(--text);
+  gap: 16px;
 }
 
 @media (max-width: 860px) {
-  .grid2,
-  .heroGrid {
+  .grid2 {
     grid-template-columns: minmax(0, 1fr);
   }
 }
