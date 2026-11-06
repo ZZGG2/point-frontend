@@ -2,6 +2,7 @@ import { createBrowserRouter } from 'react-router-dom';
 import { Layout } from './Layout';
 import { HomePage } from '@/pages/HomePage';
 import { EventPage } from '@/pages/EventPage';
+import { SystemPage } from '@/pages/SystemPage';
 
 // TODO(#이슈): login, assets, cs 페이지 추가
 export const router = createBrowserRouter([
@@ -10,6 +11,7 @@ export const router = createBrowserRouter([
     children: [
       { path: '/', element: <HomePage /> },
       { path: '/events/:eventId', element: <EventPage /> },
+      { path: '/system', element: <SystemPage /> },
     ],
   },
 ]);

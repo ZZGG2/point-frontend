@@ -146,26 +146,32 @@ export interface paths {
                 };
             };
             responses: {
-                /** @description 사용 완료 */
+                /** @description 사용 완료 (data.balance = 처리 후 잔액) */
                 200: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["BalanceResponse"];
+                    };
                 };
                 /** @description Idempotency-Key 누락·형식 오류 (code=INVALID_REQUEST) */
                 400: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
                 };
-                /** @description 잔액 부족 */
+                /** @description 잔액 부족 (code=INSUFFICIENT_BALANCE) */
                 409: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
                 };
             };
         };
@@ -296,6 +302,269 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/events/{eventId}/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 이벤트 현황 (local 프로필 전용 — 운영에서는 404) */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    eventId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description 현황 */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["EventStatusResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/events/{eventId}/open": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** 이벤트 열기/초기화 (local 프로필 전용) */
+        post: {
+            parameters: {
+                query?: {
+                    stock?: number;
+                    amount?: number;
+                };
+                header?: never;
+                path: {
+                    eventId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description 초기화 후 현황 */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["EventStatusResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/system/info": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** monolith 인스턴스·DB·Kafka 상태 (운영/인프라 검증용, OPS_API_ENABLED=false 면 비활성) */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description 구성요소가 죽어 있어도 200 — 각 status(UP/DOWN/DISABLED) 로 구분 */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["MonolithSystemInfoResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/system/whoami": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 응답한 monolith 인스턴스 정보만 (부하 분산 확인용, 외부 점검 없음) */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description 인스턴스 */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["InstanceInfoResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/events/system/whoami": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 응답한 event-service 인스턴스 정보만 (부하 분산 확인용, 외부 점검 없음) */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description 인스턴스 */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["InstanceInfoResponse"];
+                    };
+                };
+                503: components["responses"]["EventUnavailable"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/system/ledger": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 원장 집계 + 전체 사용자 최근 활동 (운영/인프라 검증용) */
+        get: {
+            parameters: {
+                query?: {
+                    recent?: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description 집계 */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["LedgerStatsResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/events/system/info": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** event-service 인스턴스·Redis·Kafka 상태 (ALB 경로 라우팅을 그대로 탐 / DR 모드에서는 503 EVENT_MAINTENANCE) */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description 구성요소가 죽어 있어도 200 — 각 status 로 구분 */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["EventSystemInfoResponse"];
+                    };
+                };
+                503: components["responses"]["EventUnavailable"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -356,6 +625,106 @@ export interface components {
             /** @example EVENT_MAINTENANCE */
             code?: string;
             message?: string;
+        };
+        EventStatusResponse: {
+            code?: string;
+            data?: {
+                eventId: string;
+                open: boolean;
+                /** Format: int64 */
+                remainingStock: number;
+                /** Format: int64 */
+                participants: number;
+                /** Format: int64 */
+                winners: number;
+            };
+        };
+        InstanceInfo: {
+            /** @example monolith */
+            service: string;
+            /** @description 응답한 인스턴스 (K8s 에서는 Pod 이름) */
+            instance: string;
+            profiles: string[];
+            drMode: boolean;
+            kafkaEnabled: boolean;
+            /** Format: date-time */
+            startedAt: string;
+            /** Format: int64 */
+            uptimeSeconds: number;
+            javaVersion: string;
+        };
+        InstanceInfoResponse: {
+            code?: string;
+            data?: components["schemas"]["InstanceInfo"];
+        };
+        ComponentStatus: {
+            /** @enum {string} */
+            status: "UP" | "DOWN" | "DISABLED";
+            /** Format: int64 */
+            latencyMs?: number | null;
+            /** @description 구성요소별 정보.
+             *     database: version, database, serverAddress, inRecovery, heartbeatAt, heartbeatLagSeconds
+             *     redis: ping, pingMs, version, mode, role, connectedClients, usedMemory, keys
+             *     kafka(monolith): clusterId, brokers, topic, consumerGroup, assignedPartitions, consumerLag
+             *     kafka(event-service): clusterId, brokers, topic, topicExists, partitions, publishedOffsetTotal
+             *      */
+            details: {
+                [key: string]: unknown;
+            };
+            error?: string | null;
+        };
+        MonolithSystemInfoResponse: {
+            code?: string;
+            data?: {
+                instance: components["schemas"]["InstanceInfo"];
+                database: components["schemas"]["ComponentStatus"];
+                kafka: components["schemas"]["ComponentStatus"];
+            };
+        };
+        EventSystemInfoResponse: {
+            code?: string;
+            data?: {
+                instance: components["schemas"]["InstanceInfo"];
+                redis: components["schemas"]["ComponentStatus"];
+                kafka: components["schemas"]["ComponentStatus"];
+            };
+        };
+        LedgerActivity: {
+            /** Format: int64 */
+            id: number;
+            /** Format: int64 */
+            userId: number;
+            type: string;
+            /** Format: int64 */
+            amount: number;
+            /** Format: int64 */
+            balanceAfter: number;
+            source: string;
+            referenceId?: string | null;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        LedgerStatsResponse: {
+            code?: string;
+            data?: {
+                /** Format: int64 */
+                walletCount: number;
+                /** Format: int64 */
+                totalBalance: number;
+                /** Format: int64 */
+                ledgerCount: number;
+                bySource: {
+                    source: string;
+                    type: string;
+                    /** Format: int64 */
+                    count: number;
+                    /** Format: int64 */
+                    totalAmount: number;
+                }[];
+                /** Format: date-time */
+                lastEventRewardAt?: string | null;
+                recent: components["schemas"]["LedgerActivity"][];
+            };
         };
     };
     responses: {

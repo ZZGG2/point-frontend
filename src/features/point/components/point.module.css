@@ -1,0 +1,159 @@
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: var(--brand-soft);
+  color: var(--brand-strong);
+  font-weight: 700;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.pillError {
+  background: var(--critical-soft);
+  color: var(--critical-text);
+}
+
+.hero {
+  background: linear-gradient(135deg, #2a78d6, #184f95);
+  color: #fff;
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 168px;
+  justify-content: space-between;
+}
+
+.heroLabel {
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+.heroValue {
+  font-size: 40px;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.heroUnit {
+  font-size: 22px;
+  font-weight: 600;
+  margin-left: 4px;
+}
+
+.heroMeta {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.tableWrap {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+.table th {
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--grid);
+  white-space: nowrap;
+}
+
+.table td {
+  padding: 11px 10px;
+  border-bottom: 1px solid var(--grid);
+  white-space: nowrap;
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.num {
+  text-align: right !important;
+}
+
+.plus {
+  color: var(--good-text);
+  font-weight: 650;
+}
+
+.minus {
+  color: var(--critical-text);
+  font-weight: 650;
+}
+
+.ref {
+  color: var(--muted);
+  font-size: 12px;
+  margin-left: 6px;
+}
+
+.empty {
+  color: var(--muted);
+  text-align: center;
+  padding: 28px 0;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 120px;
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+.input {
+  height: 38px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  padding: 0 10px;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.key {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-2);
+  background: var(--surface-2);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-sm);
+  padding: 6px 8px;
+  overflow-wrap: anywhere;
+}
+
+.hint {
+  font-size: 12px;
+  color: var(--muted);
+}
