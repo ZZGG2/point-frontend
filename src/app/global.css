@@ -1,0 +1,115 @@
+/* 전역 토큰 + 기본 요소 스타일. 컴포넌트 스타일은 각자의 *.module.css 에 둔다. */
+:root {
+  color-scheme: light;
+  --bg: #f4f5f7;
+  --surface: #ffffff;
+  --surface-2: #f9f9f7;
+  --border: rgba(11, 11, 11, 0.1);
+  --grid: #e1e0d9;
+  --text: #0b0b0b;
+  --text-2: #52514e;
+  --muted: #898781;
+
+  --brand: #2a78d6;
+  --brand-strong: #1c5cab;
+  --brand-soft: #e8f1fc;
+  --accent: #eb6834;
+
+  --good: #0ca30c;
+  --good-text: #006300;
+  --good-soft: #e6f6e6;
+  --warning: #fab219;
+  --warning-text: #8a5a00;
+  --warning-soft: #fff5dc;
+  --critical: #d03b3b;
+  --critical-text: #b02a2a;
+  --critical-soft: #fde9e9;
+  --neutral-soft: #efeeea;
+
+  --radius: 14px;
+  --radius-sm: 8px;
+  --shadow: 0 1px 2px rgba(11, 11, 11, 0.04), 0 4px 16px rgba(11, 11, 11, 0.05);
+  --font: system-ui, -apple-system, 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+  --mono: ui-monospace, 'Cascadia Code', Consolas, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --bg: #0d0d0d;
+    --surface: #1a1a19;
+    --surface-2: #222220;
+    --border: rgba(255, 255, 255, 0.1);
+    --grid: #2c2c2a;
+    --text: #f0efec;
+    --text-2: #c3c2b7;
+    --muted: #898781;
+
+    --brand: #3987e5;
+    --brand-strong: #86b6ef;
+    --brand-soft: #14263d;
+    --accent: #d95926;
+
+    --good-text: #0ca30c;
+    --good-soft: #10260f;
+    --warning-text: #fab219;
+    --warning-soft: #2e2510;
+    --critical-text: #e66767;
+    --critical-soft: #331616;
+    --neutral-soft: #2a2a28;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+}
+
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 0.85em;
+}
