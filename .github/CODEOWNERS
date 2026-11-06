@@ -1,4 +1,0 @@
-*                                    @CHANGE_ME_ORG/frontend
-/src/shared/                         @CHANGE_ME_ORG/frontend
-/.github/workflows/                  @CHANGE_ME_ORG/infra @CHANGE_ME_ORG/frontend
-/AGENTS.md                           @CHANGE_ME_ORG/all

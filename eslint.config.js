@@ -12,7 +12,7 @@ export default tseslint.config(
     plugins: { 'react-hooks': reactHooks },
     rules: {
       ...reactHooks.configs.recommended.rules,
-      // 컴포넌트에서 fetch 직접 호출 금지 → shared/api 클라이언트 + TanStack Query 사용 (AGENTS.md)
+      // 컴포넌트에서 fetch 직접 호출 금지 → shared/api 클라이언트 + TanStack Query 사용
       'no-restricted-globals': ['error', { name: 'fetch', message: 'shared/api 의 apiClient 를 사용하세요.' }],
     },
   },

@@ -3,7 +3,6 @@
 금융 포인트 플랫폼 웹 프론트엔드 — React 18 + Vite + TypeScript
 
 - 설계 문서·ADR: [point-infra/docs](https://github.com/CHANGE_ME_ORG/point-infra/tree/main/docs)
-- 작업 규칙: **[AGENTS.md](AGENTS.md)** (사람·AI 공통), [CONTRIBUTING.md](CONTRIBUTING.md)
 - API 계약: `point-backend/api/openapi.yaml` → `npm run gen:api` 로 타입 생성
 
 ## 로컬 실행
