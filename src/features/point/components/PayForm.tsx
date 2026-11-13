@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDevUserId } from '@/shared/dev/devUser';
+import { newIdempotencyKey } from '@/shared/lib/idempotencyKey';
 import { Button } from '@/shared/ui/Button';
 import { Card } from '@/shared/ui/Card';
 import { Icon } from '@/shared/ui/Icon';
@@ -42,7 +43,7 @@ export function PayForm() {
   const merchant = findMerchant(merchantId) ?? MERCHANTS[0];
 
   const submit = () => {
-    const key = pendingKey ?? crypto.randomUUID();
+    const key = pendingKey ?? newIdempotencyKey();
     setPendingKey(key);
     setFailure(null);
     pay.mutate(
