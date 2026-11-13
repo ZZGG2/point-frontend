@@ -1,0 +1,14 @@
+# --- build ---
+FROM node:20-alpine AS build
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci --no-audit --no-fund
+COPY . .
+RUN npm run build
+
+# --- runtime (non-root, 8080) ---
+# API 라우팅(/api/**)은 클러스터의 Gateway(HTTPRoute)가 담당 → 이 컨테이너는 정적 파일만 서빙
+FROM nginxinc/nginx-unprivileged:1.27-alpine
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/dist /usr/share/nginx/html
+EXPOSE 8080
