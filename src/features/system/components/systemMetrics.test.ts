@@ -113,6 +113,21 @@ describe('deriveTopology', () => {
     expect(t.kafka).toBe('DOWN');
   });
 
+  it('응답이 끊긴 서비스의 Kafka 점검 값은 쓰지 않는다', () => {
+    expect(
+      deriveTopology({ monolith: 'OK', monolithKafka: 'UP', event: 'ERROR', eventKafka: 'DOWN' })
+        .kafka,
+    ).toBe('UP');
+    expect(
+      deriveTopology({
+        monolith: 'ERROR',
+        monolithKafka: 'UP',
+        event: 'ERROR',
+        eventKafka: 'UP',
+      }).kafka,
+    ).toBe('UNKNOWN');
+  });
+
   it('둘 다 응답이 없으면 게이트웨이부터 의심', () => {
     expect(deriveTopology({ monolith: 'ERROR', event: 'ERROR' }).gateway).toBe('DOWN');
   });

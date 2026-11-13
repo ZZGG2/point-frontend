@@ -11,35 +11,48 @@ import styles from './system.module.css';
 
 const NODES: Record<TopologyNode, { x: number; y: number; title: string; sub: string }> = {
   browser: { x: 16, y: 123, title: '브라우저', sub: 'React SPA' },
-  gateway: { x: 196, y: 123, title: 'ALB / Ingress', sub: '로컬: Vite proxy' },
+  gateway: { x: 196, y: 123, title: 'ALB / Gateway', sub: '로컬: Vite proxy' },
   monolith: { x: 396, y: 40, title: 'monolith', sub: '/api/** · :8080' },
   event: { x: 396, y: 206, title: 'event-service', sub: '/api/events/** · :8081' },
-  database: { x: 640, y: 40, title: 'PostgreSQL', sub: 'Aurora / Cloud SQL' },
+  database: { x: 640, y: 40, title: 'PostgreSQL', sub: 'RDS / Cloud SQL' },
   kafka: { x: 640, y: 123, title: 'Kafka', sub: 'MSK · reward 토픽' },
   redis: { x: 640, y: 206, title: 'Redis', sub: 'ElastiCache · Lua' },
 };
 
 interface Edge {
   d: string;
+  from: TopologyNode;
   to: TopologyNode;
   async?: boolean;
   label?: { x: number; y: number; text: string };
 }
 
 const EDGES: Edge[] = [
-  { d: 'M166 154 L196 154', to: 'gateway' },
-  { d: 'M346 146 C372 146 370 71 396 71', to: 'monolith' },
-  { d: 'M346 162 C372 162 370 237 396 237', to: 'event' },
-  { d: 'M546 71 L640 71', to: 'database', label: { x: 556, y: 64, text: 'SQL (원장)' } },
-  { d: 'M546 237 L640 237', to: 'redis', label: { x: 560, y: 254, text: 'Lua 판정' } },
+  { d: 'M166 154 L196 154', from: 'browser', to: 'gateway' },
+  { d: 'M346 146 C372 146 370 71 396 71', from: 'gateway', to: 'monolith' },
+  { d: 'M346 162 C372 162 370 237 396 237', from: 'gateway', to: 'event' },
+  {
+    d: 'M546 71 L640 71',
+    from: 'monolith',
+    to: 'database',
+    label: { x: 556, y: 64, text: 'SQL (원장)' },
+  },
+  {
+    d: 'M546 237 L640 237',
+    from: 'event',
+    to: 'redis',
+    label: { x: 560, y: 254, text: 'Lua 판정' },
+  },
   {
     d: 'M546 222 C592 222 594 154 640 154',
+    from: 'event',
     to: 'kafka',
     async: true,
     label: { x: 598, y: 206, text: '보상 발행' },
   },
   {
     d: 'M660 123 C660 108 540 122 520 102',
+    from: 'kafka',
     to: 'monolith',
     async: true,
     label: { x: 552, y: 128, text: '소비 → 원장' },
@@ -53,8 +66,9 @@ const reach = (q: { isError: boolean; data?: { kind: string } }): ServiceReach =
 export function ArchitectureMap() {
   const mono = useMonolithInfo();
   const evt = useEventServiceInfo();
-  const monoInfo = mono.data?.kind === 'OK' ? mono.data.info : undefined;
-  const evtInfo = evt.data?.kind === 'OK' ? evt.data.info : undefined;
+  // 폴링이 실패해도 TanStack Query 는 이전 data 를 유지한다 → 에러 중에는 이전 점검 값을 쓰지 않는다
+  const monoInfo = !mono.isError && mono.data?.kind === 'OK' ? mono.data.info : undefined;
+  const evtInfo = !evt.isError && evt.data?.kind === 'OK' ? evt.data.info : undefined;
 
   const states = deriveTopology({
     monolith: reach(mono),
@@ -102,7 +116,7 @@ export function ArchitectureMap() {
             </marker>
           </defs>
           {EDGES.map((e) => {
-            const broken = states[e.to] === 'DOWN';
+            const broken = states[e.from] === 'DOWN' || states[e.to] === 'DOWN';
             const cls = [
               styles.mapEdge,
               e.async && styles.mapEdgeAsync,

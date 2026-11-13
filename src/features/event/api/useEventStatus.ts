@@ -41,7 +41,13 @@ export function useEventStatus(eventId: string) {
         body && typeof body === 'object' && 'code' in body ? String(body.code) : undefined;
       return toEventStatusState(response.status, data?.data, code);
     },
-    refetchInterval: 2000,
+    // 404(local 전용 API 미제공)는 배포 동안 바뀌지 않으므로 폴링을 멈추고, DR 점검(503)은 복구 확인용으로 느리게만 본다
+    refetchInterval: (query) =>
+      query.state.data?.kind === 'UNAVAILABLE'
+        ? false
+        : query.state.data?.kind === 'MAINTENANCE'
+          ? 30_000
+          : 2000,
   });
 }
 

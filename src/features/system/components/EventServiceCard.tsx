@@ -11,7 +11,8 @@ import styles from './system.module.css';
 export function EventServiceCard() {
   const { data, isLoading, isError, dataUpdatedAt } = useEventServiceInfo();
   const samples = useLatencyHistory(data?.latencyMs, dataUpdatedAt);
-  const info = data?.kind === 'OK' ? data.info : undefined;
+  // 폴링 실패 시 이전 data 가 남아 있어도 "정상" 으로 그리지 않는다
+  const info = !isError && data?.kind === 'OK' ? data.info : undefined;
 
   const head = isError ? (
     <Badge tone="critical">응답 없음</Badge>
@@ -35,7 +36,7 @@ export function EventServiceCard() {
           연결할 수 없음 — 이벤트만 영향 (포인트 기능은 정상)
         </div>
       )}
-      {data?.kind === 'MAINTENANCE' && (
+      {!isError && data?.kind === 'MAINTENANCE' && (
         <div className={styles.component}>점검 모드 (DR) — event-service 는 복구 대상이 아님</div>
       )}
       {info && redis && kafka && (

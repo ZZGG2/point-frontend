@@ -13,7 +13,9 @@ export function EventAdminPanel({ eventId }: { eventId: string }) {
   const open = useOpenEvent(eventId);
   const [stock, setStock] = useState(3);
   const [amount, setAmount] = useState(500);
-  const status = data?.kind === 'OK' ? data.status : undefined;
+  // 연결이 끊긴 동안 이전 현황(data) 을 그대로 보여주지 않는다
+  const state = isError ? undefined : data;
+  const status = state?.kind === 'OK' ? state.status : undefined;
 
   return (
     <Card
@@ -28,8 +30,8 @@ export function EventAdminPanel({ eventId }: { eventId: string }) {
       }
     >
       {isError && <Notice tone="critical">event-service 에 연결할 수 없어요</Notice>}
-      {data?.kind === 'MAINTENANCE' && <Notice tone="warning">점검 모드 (DR)</Notice>}
-      {data?.kind === 'UNAVAILABLE' && (
+      {state?.kind === 'MAINTENANCE' && <Notice tone="warning">점검 모드 (DR)</Notice>}
+      {state?.kind === 'UNAVAILABLE' && (
         <p className={styles.muted}>이벤트 관리 API 는 local 프로필에서만 제공돼요</p>
       )}
       {status && (

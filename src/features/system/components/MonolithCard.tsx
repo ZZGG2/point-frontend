@@ -11,7 +11,8 @@ import styles from './system.module.css';
 export function MonolithCard() {
   const { data, isLoading, isError, dataUpdatedAt } = useMonolithInfo();
   const samples = useLatencyHistory(data?.latencyMs, dataUpdatedAt);
-  const info = data?.kind === 'OK' ? data.info : undefined;
+  // 폴링 실패 시 이전 data 가 남아 있어도 "정상" 으로 그리지 않는다
+  const info = !isError && data?.kind === 'OK' ? data.info : undefined;
 
   const head = (
     <div className={styles.serviceHead}>

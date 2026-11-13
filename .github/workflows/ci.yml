@@ -6,7 +6,7 @@ on:
 
 permissions:
   contents: read
-  id-token: write
+  id-token: write     # OIDC (AWS, GCP)
 
 jobs:
   check:
@@ -20,30 +20,31 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
-        env: { VITE_API_BASE_URL: "${{ vars.API_BASE_URL }}" }
-      - uses: actions/upload-artifact@v4
-        if: github.ref == 'refs/heads/main'
-        with: { name: dist, path: dist }
 
-  deploy:
-    # 정적 파일 이중 배포: S3(Main) + GCS(DR). DR 시 Route 53 이 www 를 GCS 쪽으로 전환 (ADR-0010)
+  build-push:
+    # web 컨테이너 이미지(nginx-unprivileged) → ECR + Artifact Registry 이중 푸시 (ADR-0015, ADR-0010)
+    # 배포는 point-infra 의 ArgoCD 가 담당 (ADR-0012) → 이 레포는 이미지 태그 bump PR 만 만든다
     if: github.ref == 'refs/heads/main'
     needs: check
     runs-on: ubuntu-latest
-    environment: prod
     steps:
-      - uses: actions/download-artifact@v4
-        with: { name: dist, path: dist }
-      - uses: aws-actions/configure-aws-credentials@v4
-        with: { role-to-assume: "${{ vars.AWS_FRONTEND_ROLE_ARN }}", aws-region: ap-northeast-2 }
-      - name: S3 업로드 + CloudFront 무효화
+      - uses: actions/checkout@v4
+      - name: Build image
+        run: docker build -t web:${{ github.sha }} .
+      - name: Trivy scan (CRITICAL 시 실패)
+        uses: aquasecurity/trivy-action@0.28.0
+        with: { image-ref: "web:${{ github.sha }}", severity: CRITICAL, exit-code: "1" }
+      - name: 이중 푸시 — ECR + Artifact Registry
         run: |
-          aws s3 sync dist "s3://${{ vars.S3_BUCKET }}" --delete
-          aws cloudfront create-invalidation --distribution-id "${{ vars.CF_DISTRIBUTION_ID }}" --paths "/index.html"
-      - uses: google-github-actions/auth@v2
-        with:
-          workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
-          service_account: ${{ vars.GCP_FRONTEND_SA }}
-      - uses: google-github-actions/setup-gcloud@v2
-      - name: GCS 업로드 (DR)
-        run: gcloud storage rsync dist "gs://${{ vars.GCS_BUCKET }}" --recursive --delete-unmatched-destination-objects
+          echo "TODO: AWS OIDC(vars.AWS_ECR_ROLE_ARN) · GCP WIF(vars.GCP_WIF_PROVIDER, vars.GCP_AR_SA) 인증 후"
+          echo "TODO: docker tag/push → ECR(web), asia-northeast3-docker.pkg.dev/<project>/point-apps/web"
+
+  bump-infra:
+    if: github.ref == 'refs/heads/main'
+    needs: build-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: 이미지 태그 bump PR 생성
+        run: |
+          TAG="sha-${GITHUB_SHA::7}"
+          echo "TODO: point-infra overlays(aws, gcp-dr) 의 web 이미지 태그 → $TAG (backend ci 의 bump-infra 와 동일 방식)"

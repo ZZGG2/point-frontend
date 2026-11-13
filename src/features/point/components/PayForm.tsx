@@ -100,7 +100,12 @@ export function PayForm() {
               type="button"
               className={styles.merchant}
               aria-pressed={m.id === merchantId}
-              onClick={() => setMerchantId(m.id)}
+              onClick={() => {
+                // 가맹점이 바뀌면 다른 결제 → 이전 멱등키를 재사용하지 않는다
+                setMerchantId(m.id);
+                setPendingKey(null);
+                setFailure(null);
+              }}
             >
               <Icon name={m.icon} size={26} />
               {m.name}

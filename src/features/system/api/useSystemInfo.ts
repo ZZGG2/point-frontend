@@ -8,10 +8,10 @@ export type ComponentStatus = Schemas['ComponentStatus'];
 export type MonolithInfo = NonNullable<Schemas['MonolithSystemInfoResponse']['data']>;
 export type EventServiceInfo = NonNullable<Schemas['EventSystemInfoResponse']['data']>;
 
-/** 브라우저에서 잰 왕복 시간(ms) 을 같이 돌려준다 → ALB/Ingress 를 포함한 실제 체감 지연 */
+/** 브라우저에서 잰 왕복 시간(ms) 을 같이 돌려준다 → ALB/Gateway 를 포함한 실제 체감 지연 */
 export type Probed<T> =
   | { kind: 'OK'; info: T; latencyMs: number }
-  /** DR 모드: Ingress 가 /api/events/** 를 점검 응답으로 돌린다 (ADR-0004) */
+  /** DR 모드: Gateway(HTTPRoute) 가 /api/events/** 를 점검 응답으로 돌린다 (ADR-0004) */
   | { kind: 'MAINTENANCE'; latencyMs: number };
 
 const POLL_MS = 5000;

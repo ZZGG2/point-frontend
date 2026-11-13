@@ -99,8 +99,11 @@ export function deriveTopology(t: TopologyInput): Record<TopologyNode, Component
     r === 'OK' ? 'UP' : r === 'ERROR' ? 'DOWN' : r === 'MAINTENANCE' ? 'MAINTENANCE' : 'UNKNOWN';
   const reached = [t.monolith, t.event].some((r) => r === 'OK' || r === 'MAINTENANCE');
   const bothFailed = t.monolith === 'ERROR' && t.event === 'ERROR';
-  // Kafka 는 발행 측(event-service) 점검을 우선, 없으면 소비 측(monolith) 점검 결과
-  const kafka = t.eventKafka ? asState(t.eventKafka) : asState(t.monolithKafka);
+  // Kafka 는 발행 측(event-service) 점검을 우선, 없으면 소비 측(monolith) 점검 결과.
+  // 응답이 끊긴 서비스의 (이전) 점검 값은 쓰지 않는다 → 둘 다 끊기면 확인 불가
+  const eventKafka = t.event === 'OK' ? t.eventKafka : undefined;
+  const monolithKafka = t.monolith === 'OK' ? t.monolithKafka : undefined;
+  const kafka = eventKafka ? asState(eventKafka) : asState(monolithKafka);
   return {
     browser: 'UP',
     gateway: reached ? 'UP' : bothFailed ? 'DOWN' : 'UNKNOWN',
