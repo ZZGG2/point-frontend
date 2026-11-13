@@ -32,7 +32,7 @@ jobs:
       - name: Build image
         run: docker build -t web:${{ github.sha }} .
       - name: Trivy scan (CRITICAL 시 실패)
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0 (커밋 SHA 고정: 태그 변조 대비)
         with: { image-ref: "web:${{ github.sha }}", severity: CRITICAL, exit-code: "1" }
       - name: 이중 푸시 — ECR + Artifact Registry
         run: |
