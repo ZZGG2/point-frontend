@@ -203,37 +203,12 @@
   font-weight: 550;
 }
 
-/* ---- 관리자: 이벤트 관리 ---- */
+/* ---- 관리자: 이벤트 현황 ---- */
 .adminGrid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
   margin-bottom: 18px;
-}
-
-.adminForm {
-  display: flex;
-  gap: 8px;
-  align-items: flex-end;
-  flex-wrap: wrap;
-}
-
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  font-size: 12px;
-  color: var(--muted);
-  width: 110px;
-}
-
-.field input {
-  height: 40px;
-  border-radius: 10px;
-  border: 1px solid var(--grid);
-  background: var(--surface);
-  padding: 0 10px;
-  font-size: 14px;
 }
 
 .muted {

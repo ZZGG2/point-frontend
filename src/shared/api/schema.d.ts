@@ -409,7 +409,7 @@ export interface paths {
             'application/json': components['schemas']['ResultResponse'];
           };
         };
-        /** @description 당첨 (code=WON, 지급 예정 — 이벤트 종료 후 일괄 정산으로 지급, ADR-0017) */
+        /** @description 당첨 (code=WON, 지급 예정 — 원장 반영은 비동기) */
         202: {
           headers: {
             [name: string]: unknown;
@@ -500,7 +500,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** 이벤트 현황 (local 프로필 전용 — 운영에서는 404) */
+    /** 이벤트 현황 (인증 없음). 없는 id 면 open=false, 수치 0 */
     get: {
       parameters: {
         query?: never;
@@ -540,7 +540,7 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** 이벤트 열기/초기화 (local 프로필 전용) */
+    /** 이벤트 열기/초기화 (local 프로필 전용 — 운영에서는 404). 참여자·당첨자를 지우고 마감 없이 다시 연다. 운영 생성은 POST /api/events/admin/{eventId} */
     post: {
       parameters: {
         query?: {
@@ -572,83 +572,45 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/api/admin/events/{eventId}/settlement': {
+  '/api/events/admin/{eventId}': {
     parameters: {
       query?: never;
-      header: {
-        /** @description ADMIN_API_TOKEN (운영 Job·DR 런북 전용) */
-        'X-Admin-Token': string;
-      };
-      path: {
-        eventId: string;
-      };
+      header?: never;
+      path?: never;
       cookie?: never;
     };
-    /** 퀴즈 이벤트 정산 현황 (DR 판정 기준과 동일: NOT_SETTLED / COMPLETE / INCOMPLETE) */
-    get: {
-      parameters: {
-        query?: never;
-        header: {
-          /** @description ADMIN_API_TOKEN (운영 Job·DR 런북 전용) */
-          'X-Admin-Token': string;
-        };
-        path: {
-          eventId: string;
-        };
-        cookie?: never;
-      };
-      requestBody?: never;
-      responses: {
-        /** @description 현황 */
-        200: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'application/json': components['schemas']['SettlementStatusResponse'];
-          };
-        };
-        /** @description 관리자 토큰 없음·불일치 (code=FORBIDDEN) */
-        403: {
-          headers: {
-            [name: string]: unknown;
-          };
-          content: {
-            'application/json': components['schemas']['ErrorResponse'];
-          };
-        };
-      };
-    };
+    get?: never;
     put?: never;
-    /** 퀴즈 이벤트 일괄 정산 (한 트랜잭션, 멱등). 이미 정산된 이벤트면 원장에 없는 대기 건만 채운다 (DR 재정산) */
+    /**
+     * 운영용 이벤트 생성 (X-Admin-Token, event-day 런북 전용 — 프론트에서 호출하지 않는다)
+     * @description - 한 번 쓴 eventId 는 다시 쓸 수 없다 (409). 같은 id 를 다시 열면 멱등키(eventId:userId)가 겹쳐 새 당첨이 원장에서 무시되기 때문
+     *     - endsAt 이 지나면 참여 마감 (answers → 410 CLOSED). 이벤트 키는 endsAt + 1일에 만료 (ADR-0007), 보상 Stream 은 만료되지 않는다 (ADR-0019)
+     */
     post: {
       parameters: {
         query?: never;
-        header: {
-          /** @description ADMIN_API_TOKEN (운영 Job·DR 런북 전용) */
-          'X-Admin-Token': string;
-        };
+        header?: never;
         path: {
           eventId: string;
         };
         cookie?: never;
       };
-      requestBody?: {
+      requestBody: {
         content: {
-          'application/json': components['schemas']['SettleRequest'];
+          'application/json': components['schemas']['CreateEventRequest'];
         };
       };
       responses: {
-        /** @description 정산 결과 */
-        200: {
+        /** @description 생성 (code=CREATED) */
+        201: {
           headers: {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['SettlementResultResponse'];
+            'application/json': components['schemas']['EventStatusResponse'];
           };
         };
-        /** @description 최초 정산인데 expectedCount 없음 (code=INVALID_REQUEST) */
+        /** @description 입력 오류 (code=INVALID_REQUEST) — stock·amount 는 1 이상, endsAt 은 미래 시각 */
         400: {
           headers: {
             [name: string]: unknown;
@@ -657,7 +619,7 @@ export interface paths {
             'application/json': components['schemas']['ErrorResponse'];
           };
         };
-        /** @description 관리자 토큰 없음·불일치 (code=FORBIDDEN) */
+        /** @description 토큰 없음·불일치, 또는 서버에 ADMIN_API_TOKEN 미설정 (code=FORBIDDEN) */
         403: {
           headers: {
             [name: string]: unknown;
@@ -666,7 +628,7 @@ export interface paths {
             'application/json': components['schemas']['ErrorResponse'];
           };
         };
-        /** @description 대기 건수 ≠ expectedCount — Kafka 반영 중인 당첨이 남음, 잠시 후 재시도 (code=SETTLEMENT_NOT_READY) */
+        /** @description 이미 사용한 eventId (code=EVENT_ALREADY_EXISTS) */
         409: {
           headers: {
             [name: string]: unknown;
@@ -735,7 +697,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** monolith 인스턴스·DB·Kafka 상태 (운영/인프라 검증용, OPS_API_ENABLED=false 면 비활성) */
+    /** core-service 인스턴스·DB·원장 반영 Stream 상태 (운영/인프라 검증용, OPS_API_ENABLED=false 면 비활성) */
     get: {
       parameters: {
         query?: never;
@@ -751,7 +713,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            'application/json': components['schemas']['MonolithSystemInfoResponse'];
+            'application/json': components['schemas']['CoreServiceSystemInfoResponse'];
           };
         };
       };
@@ -771,7 +733,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** 응답한 monolith 인스턴스 정보만 (부하 분산 확인용, 외부 점검 없음) */
+    /** 응답한 core-service 인스턴스 정보만 (부하 분산 확인용, 외부 점검 없음) */
     get: {
       parameters: {
         query?: never;
@@ -882,7 +844,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** event-service 인스턴스·Redis·Kafka 상태 (ALB 경로 라우팅을 그대로 탐 / DR 모드에서는 503 EVENT_MAINTENANCE) */
+    /** event-service 인스턴스·Redis 상태 (ALB 경로 라우팅을 그대로 탐 / DR 모드에서는 503 EVENT_MAINTENANCE) */
     get: {
       parameters: {
         query?: never;
@@ -1005,63 +967,6 @@ export interface components {
       /** @enum {string} */
       code?: 'ATTENDED' | 'ALREADY_ATTENDED';
     };
-    SettleRequest: {
-      /**
-       * Format: int64
-       * @description 최초 정산 시 필수: event-service 당첨자 수 (Redis SCARD event:{id}:winners)
-       */
-      expectedCount?: number;
-    };
-    SettlementResultResponse: {
-      code?: string;
-      data?: {
-        eventId: string;
-        /**
-         * Format: int64
-         * @description 정산 대상 건수 (최초 정산 시 확정)
-         */
-        rowCount: number;
-        /** Format: int64 */
-        totalAmount: number;
-        /**
-         * Format: int64
-         * @description 이번 호출로 새로 원장에 들어간 건수 (재실행이면 0)
-         */
-        appliedNow: number;
-        /** @description 이미 정산된 이벤트의 누락분을 채운 호출이면 true */
-        repaired: boolean;
-        /** Format: date-time */
-        settledAt: string;
-      };
-    };
-    SettlementStatusResponse: {
-      code?: string;
-      data?: {
-        eventId: string;
-        /** @enum {string} */
-        state: 'NOT_SETTLED' | 'COMPLETE' | 'INCOMPLETE';
-        /** Format: int64 */
-        pendingCount: number;
-        /** Format: int64 */
-        pendingAmount: number;
-        /**
-         * Format: int64
-         * @description 이 이벤트로 원장에 적립된 건수
-         */
-        ledgerCount: number;
-        /**
-         * Format: int64
-         * @description 원장에 아직 없는 대기 건수
-         */
-        unappliedCount: number;
-        /** Format: int64 */
-        settledRowCount?: number | null;
-        /** Format: int64 */
-        settledTotalAmount?: number | null;
-        /** Format: date-time */
-        settledAt?: string | null;
-      };
-    };
     ErrorResponse: {
       /** @example EVENT_MAINTENANCE */
       code?: string;
@@ -1083,16 +988,39 @@ export interface components {
         participants: number;
         /** Format: int64 */
         winners: number;
+        /**
+         * Format: date-time
+         * @description 참여 마감 시각 (UTC). local open 이벤트는 null (마감 없음)
+         */
+        endsAt?: string | null;
       };
     };
+    CreateEventRequest: {
+      /**
+       * Format: int64
+       * @description 당첨 수량
+       */
+      stock: number;
+      /**
+       * Format: int64
+       * @description 당첨 시 지급 포인트
+       */
+      amount: number;
+      /**
+       * Format: date-time
+       * @description 참여 마감 시각 (미래, 예: 2026-12-01T12:00:00+09:00)
+       */
+      endsAt: string;
+    };
     InstanceInfo: {
-      /** @example monolith */
+      /** @example core-service */
       service: string;
       /** @description 응답한 인스턴스 (K8s 에서는 Pod 이름) */
       instance: string;
       profiles: string[];
       drMode: boolean;
-      kafkaEnabled: boolean;
+      /** @description 원장 반영 Redis Stream 사용 여부 (core-service: DR 모드면 false, ADR-0019) */
+      rewardStreamEnabled: boolean;
       /** Format: date-time */
       startedAt: string;
       /** Format: int64 */
@@ -1111,21 +1039,20 @@ export interface components {
       /**
        * @description 구성요소별 정보.
        *     database: version, database, serverAddress, inRecovery, heartbeatAt, heartbeatLagSeconds
-       *     redis: ping, pingMs, version, mode, role, connectedClients, usedMemory, keys
-       *     kafka(monolith): clusterId, brokers, topic, consumerGroup, assignedPartitions, consumerLag
-       *     kafka(event-service): clusterId, brokers, topic, topicExists, partitions, publishedOffsetTotal
+       *     redis(event-service): ping, pingMs, version, mode, role, connectedClients, usedMemory, keys, rewardStreams
+       *     rewardStream(core-service): consumerGroup, streams, length, pending, dlqLength
        */
       details: {
         [key: string]: unknown;
       };
       error?: string | null;
     };
-    MonolithSystemInfoResponse: {
+    CoreServiceSystemInfoResponse: {
       code?: string;
       data?: {
         instance: components['schemas']['InstanceInfo'];
         database: components['schemas']['ComponentStatus'];
-        kafka: components['schemas']['ComponentStatus'];
+        rewardStream: components['schemas']['ComponentStatus'];
       };
     };
     EventSystemInfoResponse: {
@@ -1133,7 +1060,6 @@ export interface components {
       data?: {
         instance: components['schemas']['InstanceInfo'];
         redis: components['schemas']['ComponentStatus'];
-        kafka: components['schemas']['ComponentStatus'];
       };
     };
     LedgerActivity: {
@@ -1198,7 +1124,7 @@ export interface components {
     /**
      * @description 이벤트 일시 불가. code 로 구분한다.
      *     - EVENT_MAINTENANCE: DR 모드 점검 (Gateway → maintenance 응답, ADR-0004·0014)
-     *     - EVENT_RETRY: 보상 발행 실패. 참여 기록은 되돌려졌으므로 잠시 후 같은 요청을 다시 보내면 된다
+     *     - EVENT_RETRY: Redis 연결 실패·타임아웃. 판정과 보상 기록은 한 Lua 스크립트라 둘 중 하나만 남지 않는다. 잠시 후 같은 요청을 다시 보내면 되고, 재시도가 409 면 이미 처리된 것이다 (ADR-0019)
      */
     EventUnavailable: {
       headers: {

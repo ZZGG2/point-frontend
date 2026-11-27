@@ -10,7 +10,7 @@ const TIME = new Intl.DateTimeFormat('ko-KR', {
   second: '2-digit',
 });
 
-/** 서비스(monolith) 이용 불가 시 전체 화면. 주기적으로 다시 확인하고, 회복되면 원래 화면으로 돌아간다 */
+/** 서비스(core-service) 이용 불가 시 전체 화면. 주기적으로 다시 확인하고, 회복되면 원래 화면으로 돌아간다 */
 export function MaintenancePage({ status }: { status: Extract<SystemStatus, { state: 'down' }> }) {
   useEffect(() => {
     const previous = document.title;

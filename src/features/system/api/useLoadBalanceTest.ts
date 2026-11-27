@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { apiClient } from '@/shared/api/client';
 
-export type LoadBalanceTarget = 'monolith' | 'event-service';
+export type LoadBalanceTarget = 'core-service' | 'event-service';
 
 export interface LoadBalanceSample {
   instance: string;
@@ -14,7 +14,7 @@ const CONCURRENCY = 4;
 async function whoami(target: LoadBalanceTarget): Promise<LoadBalanceSample> {
   const start = performance.now();
   const { data } =
-    target === 'monolith'
+    target === 'core-service'
       ? await apiClient.GET('/api/system/whoami')
       : await apiClient.GET('/api/events/system/whoami');
   const latencyMs = Math.round(performance.now() - start);

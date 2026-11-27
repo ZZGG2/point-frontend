@@ -3,7 +3,7 @@ import { ArchitectureMap } from '@/features/system/components/ArchitectureMap';
 import { EventServiceCard } from '@/features/system/components/EventServiceCard';
 import { LedgerOverview } from '@/features/system/components/LedgerOverview';
 import { LoadBalancePanel } from '@/features/system/components/LoadBalancePanel';
-import { MonolithCard } from '@/features/system/components/MonolithCard';
+import { CoreServiceCard } from '@/features/system/components/CoreServiceCard';
 import { CURRENT_EVENT_ID } from './currentEvent';
 import styles from './Page.module.css';
 
@@ -17,7 +17,7 @@ export function AdminPage() {
       </div>
       <ArchitectureMap />
       <div className={styles.grid2}>
-        <MonolithCard />
+        <CoreServiceCard />
         <EventServiceCard />
       </div>
       <div className={styles.grid2}>

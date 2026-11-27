@@ -1,6 +1,6 @@
 import { Badge } from '@/shared/ui/Badge';
 import { Card } from '@/shared/ui/Card';
-import { useMonolithInfo } from '../api/useSystemInfo';
+import { useCoreServiceInfo } from '../api/useSystemInfo';
 import { useLatencyHistory } from '../hooks/useLatencyHistory';
 import { ComponentPanel } from './ComponentPanel';
 import { InstanceSummary } from './InstanceSummary';
@@ -8,8 +8,8 @@ import { LatencySparkline } from './LatencySparkline';
 import { detailNumber, detailString, formatUptime, heartbeatTone } from './systemMetrics';
 import styles from './system.module.css';
 
-export function MonolithCard() {
-  const { data, isLoading, isError, dataUpdatedAt } = useMonolithInfo();
+export function CoreServiceCard() {
+  const { data, isLoading, isError, dataUpdatedAt } = useCoreServiceInfo();
   const samples = useLatencyHistory(data?.latencyMs, dataUpdatedAt);
   // 폴링 실패 시 이전 data 가 남아 있어도 "정상" 으로 그리지 않는다
   const info = !isError && data?.kind === 'OK' ? data.info : undefined;
@@ -28,19 +28,20 @@ export function MonolithCard() {
   );
 
   const db = info?.database;
-  const kafka = info?.kafka;
+  const stream = info?.rewardStream;
   const lag = detailNumber(db?.details, 'heartbeatLagSeconds');
-  const consumerLag = detailNumber(kafka?.details, 'consumerLag');
+  const pending = detailNumber(stream?.details, 'pending');
+  const dlq = detailNumber(stream?.details, 'dlqLength');
 
   return (
-    <Card title="monolith" subtitle="포인트 · 사용자 · :8080" action={head}>
+    <Card title="core-service" subtitle="포인트 · 사용자 · :8080" action={head}>
       {isLoading && <p className={styles.hint}>상태 조회 중…</p>}
       {isError && (
         <div className={styles.down} role="alert">
           연결할 수 없음 — 포인트 조회·결제 중단
         </div>
       )}
-      {info && db && kafka && (
+      {info && db && stream && (
         <>
           <InstanceSummary instance={info.instance} />
           <div className={styles.components}>
@@ -80,25 +81,37 @@ export function MonolithCard() {
               ]}
             />
             <ComponentPanel
-              name="Kafka (원장 반영 컨슈머)"
-              status={kafka}
+              name="Redis Stream (원장 반영 consumer)"
+              status={stream}
               rows={[
-                { label: '브로커', value: detailNumber(kafka.details, 'brokers') },
                 {
                   label: '컨슈머 그룹',
                   value: (
                     <span className={styles.mono}>
-                      {detailString(kafka.details, 'consumerGroup')}
+                      {detailString(stream.details, 'consumerGroup')}
                     </span>
                   ),
                 },
-                { label: '할당 파티션', value: detailNumber(kafka.details, 'assignedPartitions') },
+                { label: '보상 Stream', value: detailNumber(stream.details, 'streams') },
                 {
-                  label: '미반영 메시지 (lag)',
+                  label: '보관 중 항목 (7일)',
+                  value: detailNumber(stream.details, 'length')?.toLocaleString('ko-KR'),
+                },
+                {
+                  label: '반영 대기 (pending)',
                   value:
-                    consumerLag == null ? undefined : (
-                      <Badge tone={consumerLag === 0 ? 'good' : 'warning'}>
-                        {consumerLag.toLocaleString('ko-KR')}건
+                    pending == null ? undefined : (
+                      <Badge tone={pending === 0 ? 'good' : 'warning'}>
+                        {pending.toLocaleString('ko-KR')}건
+                      </Badge>
+                    ),
+                },
+                {
+                  label: 'DLQ',
+                  value:
+                    dlq == null ? undefined : (
+                      <Badge tone={dlq === 0 ? 'good' : 'critical'}>
+                        {dlq.toLocaleString('ko-KR')}건
                       </Badge>
                     ),
                 },

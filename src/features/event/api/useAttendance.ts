@@ -3,7 +3,7 @@ import { apiClient, ERROR_CODES } from '@/shared/api/client';
 
 export type AttendanceResult = 'ATTENDED' | 'ALREADY_ATTENDED' | 'MAINTENANCE';
 
-/** HTTP 상태 → 화면 상태. 202 출석은 "지급 예정" (원장 반영은 Kafka 경유 비동기) */
+/** HTTP 상태 → 화면 상태. 202 출석은 "지급 예정" (원장 반영은 Redis Stream 경유 비동기) */
 export function toAttendanceResult(status: number, errorCode?: string): AttendanceResult {
   switch (status) {
     case 202:

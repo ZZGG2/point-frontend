@@ -13,8 +13,7 @@ const RESULT: Record<
   Exclude<AnswerResult, 'MAINTENANCE'>,
   { title: string; sub: (reward: string) => string; win: boolean }
 > = {
-  // 퀴즈 당첨은 이벤트 종료 후 한 번에 정산된다 (point-infra ADR-0017) — 바로 잔액에 보이지 않는다
-  WON: { title: '당첨됐어요!', sub: (r) => `${r}는 이벤트가 끝나면 한 번에 지급돼요`, win: true },
+  WON: { title: '당첨됐어요!', sub: (r) => `${r}가 곧 적립돼요`, win: true },
   LOST: { title: '아쉽게도 마감됐어요', sub: () => '다음 퀴즈에 다시 도전해 주세요', win: false },
   DUPLICATE: { title: '이미 참여했어요', sub: () => '퀴즈는 한 번만 참여할 수 있어요', win: false },
   CLOSED: {

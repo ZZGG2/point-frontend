@@ -16,7 +16,7 @@ interface ComponentPanelProps {
   hint?: ReactNode;
 }
 
-/** 외부 구성요소(DB/Redis/Kafka) 한 개의 점검 결과 */
+/** 외부 구성요소(DB/Redis/Stream) 한 개의 점검 결과 */
 export function ComponentPanel({ name, status, rows, hint }: ComponentPanelProps) {
   const state = status.status as ComponentState;
   return (

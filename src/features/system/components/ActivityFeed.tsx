@@ -6,7 +6,7 @@ import styles from './system.module.css';
 
 type Activity = LedgerStats['recent'][number];
 
-/** 원장에 새로 쌓인 줄은 잠깐 강조 → Kafka 소비로 반영되는 순간을 눈으로 확인 */
+/** 원장에 새로 쌓인 줄은 잠깐 강조 → Stream 소비로 반영되는 순간을 눈으로 확인 */
 export function ActivityFeed({ items }: { items: Activity[] }) {
   const seenMaxId = useRef<number | null>(null);
   const prevMax = seenMaxId.current;

@@ -9,13 +9,13 @@ import { countByInstance } from './systemMetrics';
 import styles from './system.module.css';
 
 const TARGETS: { id: LoadBalanceTarget; label: string }[] = [
-  { id: 'monolith', label: 'monolith' },
+  { id: 'core-service', label: 'core-service' },
   { id: 'event-service', label: 'event-service' },
 ];
 
 /** whoami 를 연속 호출해 응답한 Pod 분포를 그린다 → Service/ALB 부하 분산·HPA/KEDA 확장 확인 */
 export function LoadBalancePanel() {
-  const [target, setTarget] = useState<LoadBalanceTarget>('monolith');
+  const [target, setTarget] = useState<LoadBalanceTarget>('core-service');
   const [count, setCount] = useState(20);
   const [showTable, setShowTable] = useState(false);
   const test = useLoadBalanceTest();

@@ -4,7 +4,7 @@ import { API_BASE_URL } from './baseUrl';
 import type { paths } from './schema';
 
 /**
- * 서비스(monolith) 이용 가능 여부.
+ * 서비스(core-service) 이용 가능 여부.
  * API 가 5xx·네트워크 오류를 내면 /api/health 로 한 번 더 확인해서, 그것도 실패해야 'down'(점검 화면) 으로 본다
  * → 특정 API 의 일시 오류(버그성 500 등)로 화면 전체를 막지 않는다.
  * 'down' 동안에는 주기적으로 다시 확인하고, 회복되면 onSystemRecover 콜백을 부른다.

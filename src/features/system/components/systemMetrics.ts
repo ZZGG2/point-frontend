@@ -73,22 +73,15 @@ export function heartbeatTone(lagSeconds: number | null | undefined): Tone {
 export type ServiceReach = 'LOADING' | 'OK' | 'ERROR' | 'MAINTENANCE';
 
 export interface TopologyInput {
-  monolith: ServiceReach;
+  core: ServiceReach;
   database?: string;
-  monolithKafka?: string;
+  /** core-service 가 본 원장 반영 Stream(Redis) 상태 */
+  coreStream?: string;
   event: ServiceReach;
   redis?: string;
-  eventKafka?: string;
 }
 
-export type TopologyNode =
-  | 'browser'
-  | 'gateway'
-  | 'monolith'
-  | 'event'
-  | 'database'
-  | 'kafka'
-  | 'redis';
+export type TopologyNode = 'browser' | 'gateway' | 'core' | 'event' | 'database' | 'redis';
 
 const asState = (s: string | undefined): ComponentState =>
   s === 'UP' || s === 'DOWN' || s === 'DISABLED' ? s : 'UNKNOWN';
@@ -97,21 +90,26 @@ const asState = (s: string | undefined): ComponentState =>
 export function deriveTopology(t: TopologyInput): Record<TopologyNode, ComponentState> {
   const service = (r: ServiceReach): ComponentState =>
     r === 'OK' ? 'UP' : r === 'ERROR' ? 'DOWN' : r === 'MAINTENANCE' ? 'MAINTENANCE' : 'UNKNOWN';
-  const reached = [t.monolith, t.event].some((r) => r === 'OK' || r === 'MAINTENANCE');
-  const bothFailed = t.monolith === 'ERROR' && t.event === 'ERROR';
-  // Kafka 는 발행 측(event-service) 점검을 우선, 없으면 소비 측(monolith) 점검 결과.
-  // 응답이 끊긴 서비스의 (이전) 점검 값은 쓰지 않는다 → 둘 다 끊기면 확인 불가
-  const eventKafka = t.event === 'OK' ? t.eventKafka : undefined;
-  const monolithKafka = t.monolith === 'OK' ? t.monolithKafka : undefined;
-  const kafka = eventKafka ? asState(eventKafka) : asState(monolithKafka);
+  const reached = [t.core, t.event].some((r) => r === 'OK' || r === 'MAINTENANCE');
+  const bothFailed = t.core === 'ERROR' && t.event === 'ERROR';
+  // Redis 는 판정·보상 기록 측(event-service) 점검을 우선, 없으면 Stream 소비 측(core-service) 점검 결과 (ADR-0019).
+  // 응답이 끊긴 서비스의 (이전) 점검 값은 쓰지 않는다. DR 에서는 둘 다 Redis 를 쓰지 않는다 → DISABLED
+  const eventRedis = t.event === 'OK' ? t.redis : undefined;
+  const coreStream = t.core === 'OK' ? t.coreStream : undefined;
+  const redis = eventRedis
+    ? asState(eventRedis)
+    : coreStream
+      ? asState(coreStream)
+      : t.event === 'MAINTENANCE'
+        ? 'DISABLED'
+        : 'UNKNOWN';
   return {
     browser: 'UP',
     gateway: reached ? 'UP' : bothFailed ? 'DOWN' : 'UNKNOWN',
-    monolith: service(t.monolith),
+    core: service(t.core),
     event: service(t.event),
-    database: t.monolith === 'OK' ? asState(t.database) : 'UNKNOWN',
-    kafka,
-    redis: t.event === 'OK' ? asState(t.redis) : t.event === 'MAINTENANCE' ? 'DISABLED' : 'UNKNOWN',
+    database: t.core === 'OK' ? asState(t.database) : 'UNKNOWN',
+    redis,
   };
 }
 

@@ -7,7 +7,7 @@ import { ActivityFeed } from './ActivityFeed';
 import { formatAgo } from './systemMetrics';
 import styles from './system.module.css';
 
-/** monolith 원장(PostgreSQL) 집계 — 데이터 조회 기능을 한눈에 */
+/** core-service 원장(PostgreSQL) 집계 — 데이터 조회 기능을 한눈에 */
 export function LedgerOverview() {
   const { data, isLoading, isError } = useLedgerStats();
   const [showTable, setShowTable] = useState(false);
@@ -20,7 +20,7 @@ export function LedgerOverview() {
       {isLoading && <p className={styles.hint}>집계 중…</p>}
       {isError && (
         <Notice tone="critical">
-          원장 집계를 불러오지 못했습니다. monolith 상태를 확인하세요.
+          원장 집계를 불러오지 못했습니다. core-service 상태를 확인하세요.
         </Notice>
       )}
       {data && (
@@ -39,7 +39,7 @@ export function LedgerOverview() {
               hint={
                 data.lastEventRewardAt
                   ? new Date(data.lastEventRewardAt).toLocaleTimeString('ko-KR')
-                  : 'Kafka 소비 기록 없음'
+                  : 'Stream 소비 기록 없음'
               }
             />
           </div>

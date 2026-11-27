@@ -25,7 +25,6 @@ export function EventServiceCard() {
   );
 
   const redis = info?.redis;
-  const kafka = info?.kafka;
   const pingMs = detailNumber(redis?.details, 'pingMs');
 
   return (
@@ -39,12 +38,12 @@ export function EventServiceCard() {
       {!isError && data?.kind === 'MAINTENANCE' && (
         <div className={styles.component}>점검 모드 (DR) — event-service 는 복구 대상이 아님</div>
       )}
-      {info && redis && kafka && (
+      {info && redis && (
         <>
           <InstanceSummary instance={info.instance} />
           <div className={styles.components}>
             <ComponentPanel
-              name="Redis (선착순 판정)"
+              name="Redis (선착순 판정 · 보상 기록)"
               status={redis}
               rows={[
                 { label: '버전', value: detailString(redis.details, 'version') },
@@ -57,33 +56,9 @@ export function EventServiceCard() {
                 },
                 { label: '메모리', value: detailString(redis.details, 'usedMemory') },
                 { label: '키 개수', value: detailNumber(redis.details, 'keys') },
-              ]}
-            />
-            <ComponentPanel
-              name="Kafka (보상 발행)"
-              status={kafka}
-              rows={[
-                { label: '브로커', value: detailNumber(kafka.details, 'brokers') },
                 {
-                  label: '토픽',
-                  value: (
-                    <span className={styles.mono}>{detailString(kafka.details, 'topic')}</span>
-                  ),
-                },
-                {
-                  label: '토픽 상태',
-                  value: kafka.details.topicExists ? (
-                    <Badge tone="good">생성됨</Badge>
-                  ) : (
-                    <Badge tone="neutral">첫 발행 시 생성</Badge>
-                  ),
-                },
-                { label: '파티션', value: detailNumber(kafka.details, 'partitions') },
-                {
-                  label: '누적 발행 offset',
-                  value: detailNumber(kafka.details, 'publishedOffsetTotal')?.toLocaleString(
-                    'ko-KR',
-                  ),
+                  label: '등록된 보상 Stream',
+                  value: detailNumber(redis.details, 'rewardStreams'),
                 },
               ]}
             />

@@ -3,7 +3,7 @@ import { apiClient, ERROR_CODES } from '@/shared/api/client';
 
 export type AnswerResult = 'WON' | 'LOST' | 'DUPLICATE' | 'CLOSED' | 'MAINTENANCE';
 
-/** HTTP 상태 → 화면 상태. 202 당첨은 "지급 예정" (Kafka → 정산 대기열 → 이벤트 종료 후 일괄 정산, ADR-0017) */
+/** HTTP 상태 → 화면 상태. 202 당첨은 "지급 예정" (원장 반영은 Redis Stream 경유 비동기) */
 export function toAnswerResult(status: number, errorCode?: string): AnswerResult {
   switch (status) {
     case 202:

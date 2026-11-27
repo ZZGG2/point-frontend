@@ -74,62 +74,56 @@ describe('deriveTopology', () => {
   it('모두 정상', () => {
     expect(
       deriveTopology({
-        monolith: 'OK',
+        core: 'OK',
         database: 'UP',
-        monolithKafka: 'UP',
+        coreStream: 'UP',
         event: 'OK',
         redis: 'UP',
-        eventKafka: 'UP',
       }),
     ).toEqual({
       browser: 'UP',
       gateway: 'UP',
-      monolith: 'UP',
+      core: 'UP',
       event: 'UP',
       database: 'UP',
-      kafka: 'UP',
       redis: 'UP',
     });
   });
 
-  it('DR 모드: event-service 는 점검, Kafka 는 비활성, DB 는 정상', () => {
+  it('DR 모드: event-service 는 점검, 원장 반영 Stream 은 비활성 → Redis 비활성, DB 는 정상', () => {
     const t = deriveTopology({
-      monolith: 'OK',
+      core: 'OK',
       database: 'UP',
-      monolithKafka: 'DISABLED',
+      coreStream: 'DISABLED',
       event: 'MAINTENANCE',
     });
     expect(t.event).toBe('MAINTENANCE');
-    expect(t.kafka).toBe('DISABLED');
     expect(t.redis).toBe('DISABLED');
     expect(t.database).toBe('UP');
     expect(t.gateway).toBe('UP');
   });
 
-  it('monolith 가 죽으면 DB 상태는 알 수 없다', () => {
-    const t = deriveTopology({ monolith: 'ERROR', event: 'OK', redis: 'UP', eventKafka: 'DOWN' });
-    expect(t.monolith).toBe('DOWN');
+  it('core-service 가 죽으면 DB 상태는 알 수 없고 Redis 는 event-service 점검 값을 쓴다', () => {
+    const t = deriveTopology({ core: 'ERROR', event: 'OK', redis: 'DOWN' });
+    expect(t.core).toBe('DOWN');
     expect(t.database).toBe('UNKNOWN');
-    expect(t.kafka).toBe('DOWN');
+    expect(t.redis).toBe('DOWN');
   });
 
-  it('응답이 끊긴 서비스의 Kafka 점검 값은 쓰지 않는다', () => {
+  it('Redis 는 event-service 점검을 우선하고, 응답이 끊긴 서비스의 점검 값은 쓰지 않는다', () => {
+    expect(deriveTopology({ core: 'OK', coreStream: 'UP', event: 'OK', redis: 'DOWN' }).redis).toBe(
+      'DOWN',
+    );
     expect(
-      deriveTopology({ monolith: 'OK', monolithKafka: 'UP', event: 'ERROR', eventKafka: 'DOWN' })
-        .kafka,
+      deriveTopology({ core: 'OK', coreStream: 'UP', event: 'ERROR', redis: 'DOWN' }).redis,
     ).toBe('UP');
     expect(
-      deriveTopology({
-        monolith: 'ERROR',
-        monolithKafka: 'UP',
-        event: 'ERROR',
-        eventKafka: 'UP',
-      }).kafka,
+      deriveTopology({ core: 'ERROR', coreStream: 'UP', event: 'ERROR', redis: 'UP' }).redis,
     ).toBe('UNKNOWN');
   });
 
   it('둘 다 응답이 없으면 게이트웨이부터 의심', () => {
-    expect(deriveTopology({ monolith: 'ERROR', event: 'ERROR' }).gateway).toBe('DOWN');
+    expect(deriveTopology({ core: 'ERROR', event: 'ERROR' }).gateway).toBe('DOWN');
   });
 });
 
